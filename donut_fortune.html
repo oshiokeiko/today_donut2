@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🍩 今日のおすすめドーナツ占い</title>
+
+  <!------------------------------------
+  Tailwind CSS CDN を設定 
+  -------------------------------------->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+  <!------------------------------------
+  Google Fonts: Noto Sans JP を読み込み
+  -------------------------------------->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&display=swap"
+      rel="stylesheet"
+    />
+
+  <!------------------------------------
+  外部CSSファイルの読み込み
+  -------------------------------------->
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body class="h-screen flex justify-center items-center" style="background-image: url('images/pattan.png'); background-repeat: repeat; background-size: 700px;">
+    
+    <!------------------------------------
+    幅375px固定＿PCでも中央寄せ
+    -------------------------------------->
+    <div class="w-[430px] h-screen mx-auto px-5 bg-orange-100 overflow-y-auto">
+      <!-- タイトル -->
+      <h1 class="text-center mt-8 mb-1">
+        <img src="images/logo.png" alt="今日のおすすめドーナツ占い" class="mx-auto" />
+      </h1>
+      <p class="text-center text-gray-500 text-sm mb-8">
+        今日の調子はどう？<br>
+        気分を選んで、運命のドーナッツを見つけよう！
+      </p>
+
+      <!------------------------------------
+      気分を選択するボタン
+      -------------------------------------->
+      <div class="flex flex-col gap-3 mb-8">
+        <button
+          id="btn-great"
+          class="w-full rounded-full py-4 font-bold text-gray-600 text-lg bg-gray-50 hover:bg-gray-100 active:scale-95 transition-all shadow-xs"
+        >
+          絶好調 😆
+        </button>
+        <button
+          id="btn-normal"
+          class="w-full rounded-full py-4 font-bold text-gray-600 text-lg bg-gray-50 hover:bg-gray-100 active:scale-95 transition-all shadow-xs"
+        >
+          ふつう 😐
+        </button>
+        <button
+          id="btn-tired"
+          class="w-full rounded-full py-4 font-bold text-gray-600 text-lg bg-gray-50 hover:bg-gray-100 active:scale-95 transition-all shadow-xs"
+        >
+          ちょっとつかれた 😔
+        </button>
+      </div>
+
+      <!------------------------------------
+      モーダル（画面全体を覆う幕 ＋ 結果カード）
+      -------------------------------------->
+      <div
+        id="modal-overlay"
+        class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+      >
+        <!-- 結果カード（真ん中に浮かぶ） -->
+        <div id="result" class="rounded-2xl p-5 shadow-md bg-white w-[340px]">
+          <!-- ドーナツイラスト -->
+          <img
+            id="donut-img"
+            src=""
+            alt=""
+            class="w-48 h-48 mx-auto object-contain rounded-xl mb-4"
+          />
+
+          <!-- ドーナツ名 -->
+          <p
+            id="donut-name"
+            class="text-xl font-black text-center text-red-600 mb-2"
+          ></p>
+
+          <!-- 一言コメント -->
+          <p
+            id="donut-comment"
+            class="text-sm text-gray-600 text-center leading-relaxed mb-4"
+          ></p>
+
+          <!-- ラッキーアイテム & ラッキーカラー -->
+          <div class="flex gap-2 mb-4">
+            <div class="flex-1 text-center bg-orange-50 rounded-xl py-2 px-2">
+              <p class="text-xs text-gray-500 mb-1">ラッキーアイテム</p>
+              <p id="lucky-item" class="text-sm font-bold text-gray-600"></p>
+            </div>
+            <div class="flex-1 text-center bg-orange-50 rounded-xl py-2 px-2">
+              <p class="text-xs text-gray-500 mb-1">ラッキーカラー</p>
+              <p id="lucky-color" class="text-sm font-bold text-gray-600"></p>
+            </div>
+          </div>
+
+          <!-- もう一度占うボタン -->
+          <button
+            id="reset-btn"
+            class="w-full rounded-full py-3 font-bold text-white text-base bg-yellow-600 hover:bg-red-600 active:scale-95 transition-all shadow"
+          >
+            もう一度占う
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!------------------------------------
+    ここからJS記述
+    -------------------------------------->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+      // ===================================================
+      // ラッキーアイテムの候補をluckyItemsに入れる
+      // リストの中身には、先頭から 0, 1, 2, 3… と番号がついている
+      // const luckyItems = ["いちご", "コーヒー", "ノート", "ハンカチ", "傘"];
+      //                     0番       1番       2番      3番      4番
+      // ===================================================
+      const luckyItems = [
+        "いちご", "コーヒー", "ノート", "ハンカチ", "傘",
+        "鏡", "カメラ", "財布", "鍵", "花",
+        "本", "クッション", "リボン", "メガネ", "スニーカー"
+      ];
+
+      // ===================================================
+      // ラッキーカラーの候補をluckyColorsに入れる
+      // ===================================================
+      const luckyColors = [
+        "ピンク", "オレンジ", "イエロー", "グリーン", "ブルー",
+        "パープル", "ホワイト", "レッド", "ゴールド", "シルバー",
+        "ラベンダー", "ミント", "コーラル", "ネイビー", "ベージュ"
+      ];
+
+      // ===================================================
+      // ラッキーアイテム・カラーをランダムで表示する
+      // ===================================================
+      function showLucky() {
+        const item = luckyItems[Math.floor(Math.random() * luckyItems.length)];
+        const color = luckyColors[Math.floor(Math.random() * luckyColors.length)];
+        $("#lucky-item").text(item);
+        $("#lucky-color").text(color);
+      }
+        //メモ：luckyItems.lengthは、リストの個数を自動で数えてくれるもの
+      
+      // ===================================================
+      // 絶好調ボタンを押したら、0.1.2がランダムに発行される
+      // ===================================================
+      $("#btn-great").on("click", function () {
+        const random_number = Math.floor(Math.random() * 3);
+        console.log(random_number);
+        showLucky();
+
+        // ===================================================
+        // もし0だったら、ポンデリングを表示する
+        // ===================================================
+        if (random_number === 0) {
+          //非表示のクラスを隠す
+          $("#modal-overlay").removeClass("hidden");
+          //画像を表示する
+          $("#donut-img").attr("src", "images/ponde_ring.png");
+          //ドーナッツ名を表示する
+          $("#donut-name").text("ポン・デ・リング");
+          //ドーナッツに即したメッセージを表示する
+          $("#donut-comment").text(
+            "今日はどこまでも広がれる。その輪のように、つながりを楽しんで"
+          );
+        // ===================================================
+        // もし1だったら、フレンチクルーラーを表示する
+        // ===================================================
+        } else if (random_number === 1) {
+          $("#modal-overlay").removeClass("hidden");
+          $("#donut-img").attr("src", "images/french_cruller.png");
+          $("#donut-name").text("フレンチクルーラー");
+          $("#donut-comment").text(
+            "ふわふわ軽やか、今日のあなたそのもの。どんな場所でもスッと輝けるはず！");
+        // ===================================================
+        // それ以外だったら、エンゼルクリームを表示する
+        // ===================================================
+        } else {
+          $("#modal-overlay").removeClass("hidden");
+          $("#donut-img").attr("src", "images/angel_cream.png");
+          $("#donut-name").text("エンゼルクリーム");
+          $("#donut-comment").text(
+            "クリームたっぷり、喜びたっぷり。今日は自分へのご褒美を遠慮なく。");
+        }
+        // ===================================================
+        // もう一度占うボタンを押したら、モーダルを非表示にするクラスが追加される
+        // ===================================================
+        $("#reset-btn").on("click", function () {
+          $("#modal-overlay").addClass("hidden");
+        });
+      });
+
+      // ===================================================
+      // 普通ボタンを押したら、0.1.2がランダムに発行される
+      // ===================================================
+      $("#btn-normal").on("click", function () {
+        const random_number = Math.floor(Math.random() * 3);
+        console.log(random_number);
+
+        // ===================================================
+        // もし0だったら、オールドファッションを表示する
+        // ===================================================
+        if (random_number === 0) {
+          //非表示のクラスを隠す
+          $("#modal-overlay").removeClass("hidden");
+          //画像を表示する
+          $("#donut-img").attr("src", "images/old_fashion.png");
+          //ドーナッツ名を表示する
+          $("#donut-name").text("オールドファッション");
+          //ドーナッツに即したメッセージを表示する
+          $("#donut-comment").text(
+            "飾らない日こそ、本物のおいしさに気づける。今日はそんな日。"
+          );
+        // ===================================================
+        // もし1だったら、ハニーディップを表示する
+        // ===================================================
+        } else if (random_number === 1) {
+          $("#modal-overlay").removeClass("hidden");
+          $("#donut-img").attr("src", "images/honey_dip.png");
+          $("#donut-name").text("ハニーディップ");
+          $("#donut-comment").text(
+            "シンプルだからこそ、じんわりしみてくる甘さ。いつもどおりが一番大切。");
+        // ===================================================
+        // それ以外だったら、ゴールデンチョコレートを表示する
+        // ===================================================
+        } else {
+          $("#modal-overlay").removeClass("hidden");
+          $("#donut-img").attr("src", "images/golden_chocolate.png");
+          $("#donut-name").text("ゴールデンチョコレート");
+          $("#donut-comment").text(
+            "ほどよい甘さが今日のお供。チョコみたいに濃い時間が待ってる。");
+        }
+        // ===================================================
+        // もう一度占うボタンを押したら、モーダルを非表示にするクラスが追加される
+        // ===================================================
+        $("#reset-btn").on("click", function () {
+          $("#modal-overlay").addClass("hidden");
+        });
+      });
+
+      // ===================================================
+      // ちょっと疲れたボタンを押したら、0.1.2がランダムに発行される
+      // ===================================================
+      $("#btn-tired").on("click", function () {
+        const random_number = Math.floor(Math.random() * 3);
+        console.log(random_number);
+
+        // ===================================================
+        // もし0だったら、チョコファッションを表示する
+        // ===================================================
+        if (random_number === 0) {
+          //非表示のクラスを隠す
+          $("#modal-overlay").removeClass("hidden");
+          //画像を表示する
+          $("#donut-img").attr("src", "images/choco_fashion.png");
+          //ドーナッツ名を表示する
+          $("#donut-name").text("チョコファッション");
+          //ドーナッツに即したメッセージを表示する
+          $("#donut-comment").text(
+            "ずっしりしたチョコで心をほぐして。今日はゆっくりでいい。"
+          );
+        // ===================================================
+        // もし1だったら、ポン・デ・ストロベリーを表示する
+        // ===================================================
+        } else if (random_number === 1) {
+          $("#modal-overlay").removeClass("hidden");
+          $("#donut-img").attr("src", "images/ponde_strawberry.png");
+          $("#donut-name").text("ポン・デ・ストロベリー");
+          $("#donut-comment").text(
+            "もちもち食感が、じんわりほっこりさせてくれる。今日は甘えていい日だよ。");
+        // ===================================================
+        // それ以外だったら、エンゼルフレンチを表示する
+        // ===================================================
+        } else {
+          $("#modal-overlay").removeClass("hidden");
+          $("#donut-img").attr("src", "images/angel_french.png");
+          $("#donut-name").text("エンゼルフレンチ");
+          $("#donut-comment").text(
+            "フワッと軽い口どけが重くなった気持ちを浮かせてくれる。深呼吸して、ひと口どうぞ。");
+        }
+        // ===================================================
+        // もう一度占うボタンを押したら、モーダルを非表示にするクラスが追加される
+        // ===================================================
+        $("#reset-btn").on("click", function () {
+          $("#modal-overlay").addClass("hidden");
+        });
+      });
+    </script>
+  </body>
+</html>
