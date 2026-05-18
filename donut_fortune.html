@@ -122,17 +122,71 @@
     -------------------------------------->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script>
+        // ===================================================
+      // ドーナッツの候補をdonutsに入れる
+      // luckyItemsと同じ配列だけど、情報の塊を並べる時は{情報の塊}でくくる
+      // ===================================================
+      const donuts = [
+        { name: "シュガーリング",
+          img: "images/sugar_ring.png",
+          message: "その輪のように、今日はつながりが広がる予感。誰かに声をかけてみて。",
+          weight: 9 
+        },
+        { name: "ミルキークラウド",
+          img: "images/milky_cloud.png",
+          message: "ふわっとした出会いが、思いのほか深くなる一日。柔らかく受け取って。",
+          weight: 9 
+        },
+        { name: "ストロベリーベール",
+          img: "images/strawberry_veil.png",
+          message: "甘さの中にある酸味が今日のスパイス。小さなすれ違いも、あとから笑い話に。",
+          weight: 9 
+        },
+        { name: "マットチョコリング",
+          img: "images/matte_choco_ring.png",
+          message: "落ち着いた深みが今日の武器。焦らず、じっくり向き合うと道が開ける。",
+          weight: 9 
+        },
+        { name: "レモンシャワー",
+          img: "images/lemon_shower.png",
+          message: "さっぱりとした風が吹く日。抱えていたモヤモヤを、今日手放していい。", weight: 9 
+        },
+        { name: "シナモンツイスト",
+          img: "images/cinnamon_twist.png",
+          message: "ひとひねりのアイデアが光る。いつもと違うルートを選んでみて。",                                                                    weight: 9 
+        },
+        { name: "ブルーベリーフロスト",
+          img: "images/blueberry_frost.png",
+          message: "静かな確信が宿る日。自分の直感を、今日だけは信じ切ってみて。",                                                                  weight: 9 
+        },
+        { name: "キャラメルクリスプ",
+          img: "images/caramel_crisp.png",
+          message: "表面はサクッと、中はとろける。今日の頑張りは、後からじんわり報われる。",  weight: 9 
+        },
+        { name: "マカダミアホワイト",
+          img: "images/macadamia_white.png",
+          message: "リッチな一日の予感。自分に少し贅沢を許すと、気持ちが上向く。",                                                                    weight: 9 
+        },
+        { name: "アールグレイグレーズ",
+          img: "images/earl_grey_glaze.png",
+          message: "香りを楽しむように、今日は過程を味わって。急がなくていい。",                                                                      weight: 9 
+        },
+        { name: "ゴールデン・ナッツ・レガリア",
+          img: "images/golden_nuts_regalia.png",
+          message: "これが出た日は、特別な何かが動き始めるサイン。直感を大切に、チャンスの扉を叩いて。あなたの今日は、輝いている。",
+          weight: 5
+        },
+      ];
+      //console.log(donuts);
       // ===================================================
       // ラッキーアイテムの候補をluckyItemsに入れる
-      // リストの中身には、先頭から 0, 1, 2, 3… と番号がついている
-      // const luckyItems = ["いちご", "コーヒー", "ノート", "ハンカチ", "傘"];
-      //                     0番       1番       2番      3番      4番
       // ===================================================
       const luckyItems = [
         "いちご", "コーヒー", "ノート", "ハンカチ", "傘",
         "鏡", "カメラ", "財布", "鍵", "花",
         "本", "クッション", "リボン", "メガネ", "スニーカー"
       ];
+      
 
       // ===================================================
       // ラッキーカラーの候補をluckyColorsに入れる
@@ -154,13 +208,14 @@
       }
         //メモ：luckyItems.lengthは、リストの個数を自動で数えてくれるもの
       
+
+        
       // ===================================================
-      // 絶好調ボタンを押したら、0.1.2がランダムに発行される
+      // 絶好調ボタンを押したら、ドーナッツをランダムで表示する
       // ===================================================
-      $("#btn-great").on("click", function () {
-        const random_number = Math.floor(Math.random() * 3);
-        console.log(random_number);
-        showLucky();
+      $("#btn-great").on("click", function showDonuts() {
+        const today_donuts = donuts[Math.floor(Math.random() * donuts.length)];
+        $("")
 
         // ===================================================
         // もし0だったら、ポンデリングを表示する
