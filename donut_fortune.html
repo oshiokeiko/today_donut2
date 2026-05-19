@@ -122,62 +122,45 @@
     -------------------------------------->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script>
-        // ===================================================
+      // ===================================================
       // ドーナッツの候補をdonutsに入れる
-      // luckyItemsと同じ配列だけど、情報の塊を並べる時は{情報の塊}でくくる
+      // 最後の1個がレアドーナツ（RARE_CHANCEで確率を設定）
       // ===================================================
       const donuts = [
-        { name: "シュガーリング",
-          img: "images/sugar_ring.png",
-          message: "その輪のように、今日はつながりが広がる予感。誰かに声をかけてみて。",
-          weight: 9 
-        },
-        { name: "ミルキークラウド",
-          img: "images/milky_cloud.png",
-          message: "ふわっとした出会いが、思いのほか深くなる一日。柔らかく受け取って。",
-          weight: 9 
-        },
-        { name: "ストロベリーベール",
-          img: "images/strawberry_veil.png",
-          message: "甘さの中にある酸味が今日のスパイス。小さなすれ違いも、あとから笑い話に。",
-          weight: 9 
-        },
-        { name: "マットチョコリング",
-          img: "images/matte_choco_ring.png",
-          message: "落ち着いた深みが今日の武器。焦らず、じっくり向き合うと道が開ける。",
-          weight: 9 
-        },
-        { name: "レモンシャワー",
-          img: "images/lemon_shower.png",
-          message: "さっぱりとした風が吹く日。抱えていたモヤモヤを、今日手放していい。", weight: 9 
-        },
-        { name: "シナモンツイスト",
-          img: "images/cinnamon_twist.png",
-          message: "ひとひねりのアイデアが光る。いつもと違うルートを選んでみて。",                                                                    weight: 9 
-        },
-        { name: "ブルーベリーフロスト",
-          img: "images/blueberry_frost.png",
-          message: "静かな確信が宿る日。自分の直感を、今日だけは信じ切ってみて。",                                                                  weight: 9 
-        },
-        { name: "キャラメルクリスプ",
-          img: "images/caramel_crisp.png",
-          message: "表面はサクッと、中はとろける。今日の頑張りは、後からじんわり報われる。",  weight: 9 
-        },
-        { name: "マカダミアホワイト",
-          img: "images/macadamia_white.png",
-          message: "リッチな一日の予感。自分に少し贅沢を許すと、気持ちが上向く。",                                                                    weight: 9 
-        },
-        { name: "アールグレイグレーズ",
-          img: "images/earl_grey_glaze.png",
-          message: "香りを楽しむように、今日は過程を味わって。急がなくていい。",                                                                      weight: 9 
-        },
-        { name: "ゴールデン・ナッツ・レガリア",
-          img: "images/golden_nuts_regalia.png",
-          message: "これが出た日は、特別な何かが動き始めるサイン。直感を大切に、チャンスの扉を叩いて。あなたの今日は、輝いている。",
-          weight: 5
-        },
+        { name: "シュガーリング",       img: "images/sugar_ring.png",        message: "その輪のように、今日はつながりが広がる予感。誰かに声をかけてみて。" },
+        { name: "ミルキークラウド",     img: "images/milky_cloud.png",       message: "ふわっとした出会いが、思いのほか深くなる一日。柔らかく受け取って。" },
+        { name: "ストロベリーベール",   img: "images/strawberry_veil.png",   message: "甘さの中にある酸味が今日のスパイス。小さなすれ違いも、あとから笑い話に。" },
+        { name: "マットチョコリング",   img: "images/matte_choco_ring.png",  message: "落ち着いた深みが今日の武器。焦らず、じっくり向き合うと道が開ける。" },
+        { name: "レモンシャワー",       img: "images/lemon_shower.png",      message: "さっぱりとした風が吹く日。抱えていたモヤモヤを、今日手放していい。" },
+        { name: "シナモンツイスト",     img: "images/cinnamon_twist.png",    message: "ひとひねりのアイデアが光る。いつもと違うルートを選んでみて。" },
+        { name: "ブルーベリーフロスト", img: "images/blueberry_frost.png",   message: "静かな確信が宿る日。自分の直感を、今日だけは信じ切ってみて。" },
+        { name: "キャラメルクリスプ",   img: "images/caramel_crisp.png",     message: "表面はサクッと、中はとろける。今日の頑張りは、後からじんわり報われる。" },
+        { name: "マカダミアホワイト",   img: "images/macadamia_white.png",   message: "リッチな一日の予感。自分に少し贅沢を許すと、気持ちが上向く。" },
+        { name: "アールグレイグレーズ", img: "images/earl_grey_glaze.png",   message: "香りを楽しむように、今日は過程を味わって。急がなくていい。" },
+        { name: "ゴールデン・ナッツ・レガリア", img: "images/golden_nuts_regalia.png", message: "これが出た日は、特別な何かが動き始めるサイン。直感を大切に、チャンスの扉を叩いて。あなたの今日は、輝いている。" },
       ];
-      //console.log(donuts);
+
+      // ===================================================
+      // レアドーナッツが出る確率を出すために
+      // RARE_CHANCEに5を代入
+      // ===================================================
+      const RARE_CHANCE = 5; // 5%
+
+      // ===================================================
+      // ドーナッツをピックアップする関数
+      // ===================================================
+      function pickDonut() {
+        // 0〜100のランダムな数字が RARE_CHANCE（5）より小さければ
+        if (Math.random() * 100 < RARE_CHANCE) {
+          // レアドーナッツを表示する。
+          // 配列の番号は0から始まるので、最後のレアドーナツを表示するは donuts.length - 1
+          return donuts[donuts.length - 1]; 
+        }else{
+          // 5より大きければ、ランダムな数字を正数にしてレアドーナツ以外を表示する
+          // （donuts.length - 1）配列から1ひいてランダム数字を出し正数にすると、配列最後のレアドーナツは含まれない
+          return donuts[Math.floor(Math.random() * (donuts.length - 1))]
+        }
+      }
       // ===================================================
       // ラッキーアイテムの候補をluckyItemsに入れる
       // ===================================================
@@ -186,7 +169,6 @@
         "鏡", "カメラ", "財布", "鍵", "花",
         "本", "クッション", "リボン", "メガネ", "スニーカー"
       ];
-      
 
       // ===================================================
       // ラッキーカラーの候補をluckyColorsに入れる
@@ -206,152 +188,25 @@
         $("#lucky-item").text(item);
         $("#lucky-color").text(color);
       }
-        //メモ：luckyItems.lengthは、リストの個数を自動で数えてくれるもの
       
-
-        
       // ===================================================
-      // 絶好調ボタンを押したら、ドーナッツをランダムで表示する
+      // 気分ボタン（絶好調・ふつう・疲れた）を押したら
+      // pickDonut()でドーナッツを選んで結果を表示する
       // ===================================================
-      $("#btn-great").on("click", function showDonuts() {
-        const today_donuts = donuts[Math.floor(Math.random() * donuts.length)];
-        $("")
-
-        // ===================================================
-        // もし0だったら、ポンデリングを表示する
-        // ===================================================
-        if (random_number === 0) {
-          //非表示のクラスを隠す
-          $("#modal-overlay").removeClass("hidden");
-          //画像を表示する
-          $("#donut-img").attr("src", "images/ponde_ring.png");
-          //ドーナッツ名を表示する
-          $("#donut-name").text("ポン・デ・リング");
-          //ドーナッツに即したメッセージを表示する
-          $("#donut-comment").text(
-            "今日はどこまでも広がれる。その輪のように、つながりを楽しんで"
-          );
-        // ===================================================
-        // もし1だったら、フレンチクルーラーを表示する
-        // ===================================================
-        } else if (random_number === 1) {
-          $("#modal-overlay").removeClass("hidden");
-          $("#donut-img").attr("src", "images/french_cruller.png");
-          $("#donut-name").text("フレンチクルーラー");
-          $("#donut-comment").text(
-            "ふわふわ軽やか、今日のあなたそのもの。どんな場所でもスッと輝けるはず！");
-        // ===================================================
-        // それ以外だったら、エンゼルクリームを表示する
-        // ===================================================
-        } else {
-          $("#modal-overlay").removeClass("hidden");
-          $("#donut-img").attr("src", "images/angel_cream.png");
-          $("#donut-name").text("エンゼルクリーム");
-          $("#donut-comment").text(
-            "クリームたっぷり、喜びたっぷり。今日は自分へのご褒美を遠慮なく。");
-        }
-        // ===================================================
-        // もう一度占うボタンを押したら、モーダルを非表示にするクラスが追加される
-        // ===================================================
-        $("#reset-btn").on("click", function () {
-          $("#modal-overlay").addClass("hidden");
-        });
+      $("#btn-great, #btn-normal, #btn-tired").on("click", function () {
+        const today_donut = pickDonut();
+        $("#donut-img").attr("src", today_donut.img);
+        $("#donut-name").text(today_donut.name);
+        $("#donut-comment").text(today_donut.message);
+        $("#modal-overlay").removeClass("hidden");
+        showLucky();
       });
 
       // ===================================================
-      // 普通ボタンを押したら、0.1.2がランダムに発行される
+      // もう一度占うボタンを押したら、モーダルを非表示にする
       // ===================================================
-      $("#btn-normal").on("click", function () {
-        const random_number = Math.floor(Math.random() * 3);
-        console.log(random_number);
-
-        // ===================================================
-        // もし0だったら、オールドファッションを表示する
-        // ===================================================
-        if (random_number === 0) {
-          //非表示のクラスを隠す
-          $("#modal-overlay").removeClass("hidden");
-          //画像を表示する
-          $("#donut-img").attr("src", "images/old_fashion.png");
-          //ドーナッツ名を表示する
-          $("#donut-name").text("オールドファッション");
-          //ドーナッツに即したメッセージを表示する
-          $("#donut-comment").text(
-            "飾らない日こそ、本物のおいしさに気づける。今日はそんな日。"
-          );
-        // ===================================================
-        // もし1だったら、ハニーディップを表示する
-        // ===================================================
-        } else if (random_number === 1) {
-          $("#modal-overlay").removeClass("hidden");
-          $("#donut-img").attr("src", "images/honey_dip.png");
-          $("#donut-name").text("ハニーディップ");
-          $("#donut-comment").text(
-            "シンプルだからこそ、じんわりしみてくる甘さ。いつもどおりが一番大切。");
-        // ===================================================
-        // それ以外だったら、ゴールデンチョコレートを表示する
-        // ===================================================
-        } else {
-          $("#modal-overlay").removeClass("hidden");
-          $("#donut-img").attr("src", "images/golden_chocolate.png");
-          $("#donut-name").text("ゴールデンチョコレート");
-          $("#donut-comment").text(
-            "ほどよい甘さが今日のお供。チョコみたいに濃い時間が待ってる。");
-        }
-        // ===================================================
-        // もう一度占うボタンを押したら、モーダルを非表示にするクラスが追加される
-        // ===================================================
-        $("#reset-btn").on("click", function () {
-          $("#modal-overlay").addClass("hidden");
-        });
-      });
-
-      // ===================================================
-      // ちょっと疲れたボタンを押したら、0.1.2がランダムに発行される
-      // ===================================================
-      $("#btn-tired").on("click", function () {
-        const random_number = Math.floor(Math.random() * 3);
-        console.log(random_number);
-
-        // ===================================================
-        // もし0だったら、チョコファッションを表示する
-        // ===================================================
-        if (random_number === 0) {
-          //非表示のクラスを隠す
-          $("#modal-overlay").removeClass("hidden");
-          //画像を表示する
-          $("#donut-img").attr("src", "images/choco_fashion.png");
-          //ドーナッツ名を表示する
-          $("#donut-name").text("チョコファッション");
-          //ドーナッツに即したメッセージを表示する
-          $("#donut-comment").text(
-            "ずっしりしたチョコで心をほぐして。今日はゆっくりでいい。"
-          );
-        // ===================================================
-        // もし1だったら、ポン・デ・ストロベリーを表示する
-        // ===================================================
-        } else if (random_number === 1) {
-          $("#modal-overlay").removeClass("hidden");
-          $("#donut-img").attr("src", "images/ponde_strawberry.png");
-          $("#donut-name").text("ポン・デ・ストロベリー");
-          $("#donut-comment").text(
-            "もちもち食感が、じんわりほっこりさせてくれる。今日は甘えていい日だよ。");
-        // ===================================================
-        // それ以外だったら、エンゼルフレンチを表示する
-        // ===================================================
-        } else {
-          $("#modal-overlay").removeClass("hidden");
-          $("#donut-img").attr("src", "images/angel_french.png");
-          $("#donut-name").text("エンゼルフレンチ");
-          $("#donut-comment").text(
-            "フワッと軽い口どけが重くなった気持ちを浮かせてくれる。深呼吸して、ひと口どうぞ。");
-        }
-        // ===================================================
-        // もう一度占うボタンを押したら、モーダルを非表示にするクラスが追加される
-        // ===================================================
-        $("#reset-btn").on("click", function () {
-          $("#modal-overlay").addClass("hidden");
-        });
+      $("#reset-btn").on("click", function () {
+        $("#modal-overlay").addClass("hidden");
       });
     </script>
   </body>
