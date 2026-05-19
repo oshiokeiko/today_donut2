@@ -121,6 +121,8 @@
     ここからJS記述
     -------------------------------------->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+
     <script>
       // ===================================================
       // ドーナッツの候補をdonutsに入れる
@@ -198,15 +200,19 @@
         $("#donut-img").attr("src", today_donut.img);
         $("#donut-name").text(today_donut.name);
         $("#donut-comment").text(today_donut.message);
-        $("#modal-overlay").removeClass("hidden");
+        $("#modal-overlay").removeClass("hidden").hide().fadeIn(400);
         showLucky();
+
+        if(today_donut === donuts[donuts.length-1]){
+          confetti();
+        }
       });
 
       // ===================================================
       // もう一度占うボタンを押したら、モーダルを非表示にする
       // ===================================================
       $("#reset-btn").on("click", function () {
-        $("#modal-overlay").addClass("hidden");
+        $("#modal-overlay").fadeOut(300);
       });
     </script>
   </body>
